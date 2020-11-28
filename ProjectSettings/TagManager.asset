@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Coins
+  - HealthBar
+  - Health
+  - UI
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Player
+  - Ground
+  - Coin
+  - Button
+  - Box
+  - Rope
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2420403397
+    locked: 0
+  - name: Foreground
+    uniqueID: 465786819
+    locked: 0
+  - name: Collectibles
+    uniqueID: 4008506759
+    locked: 0
+  - name: Enemies
+    uniqueID: 225773703
+    locked: 0
+  - name: DeathAnim
+    uniqueID: 2693939409
+    locked: 0
+  - name: Player
+    uniqueID: 3004740257
+    locked: 0
+  - name: UI
+    uniqueID: 1448444651
+    locked: 0
