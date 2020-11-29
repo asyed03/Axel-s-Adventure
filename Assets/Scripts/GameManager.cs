@@ -32,10 +32,11 @@ public class GameManager : MonoBehaviour
         LoadMainMenu();
     }
 
-    private void Start()
+    void Start()
     {
         maskBG.SetActive(false);
         circleMask.SetActive(false);
+        SetMixerVolume();
     }
 
     void MakeSingleton()
@@ -53,8 +54,6 @@ public class GameManager : MonoBehaviour
 
     public void InititializeGameDefault()
     {
-        AudioManager.instance.audioMixer.SetFloat("volumeSFX", -5f);
-        AudioManager.instance.audioMixer.SetFloat("volumeMusic", Mathf.Log10(PlayerPrefs.GetFloat("volumeMusic", 1)) * 20);
 
         if (PlayerPrefs.GetInt("level1", 0) != 1)
         {
@@ -66,6 +65,12 @@ public class GameManager : MonoBehaviour
             Levels[i].unlocked = PlayerPrefs.GetInt("level" + (i + 1), 0) == 1;
             Levels[i].number = i + 1;
         }
+    }
+
+    public void SetMixerVolume ()
+    {
+        AudioManager.instance.audioMixer.SetFloat("volumeMusic", Mathf.Log10(PlayerPrefs.GetFloat("volumeMusic")) * 20);
+        AudioManager.instance.audioMixer.SetFloat("volumeSFX", Mathf.Log10(PlayerPrefs.GetFloat("volumeSFX")) * 20);
     }
 
     public void ChangeStat(string s, float i)
@@ -216,6 +221,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         InititializeGameDefault();
+        SetMixerVolume();
         LoadMainMenu();
     }
 

@@ -23,7 +23,6 @@ public class AudioManager : MonoBehaviour
             s.source.loop = s.loop;
             s.source.outputAudioMixerGroup = audioMixer.FindMatchingGroups(s.soundType.ToString())[0];
         }
-
     }
 
     void MakeSingleton()
