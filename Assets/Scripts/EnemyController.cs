@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour
     public float health = 5f;
     public Rigidbody2D rb;
     public Rigidbody2D playerRb;
+    public SpriteRenderer spriteRenderer;
     public CharacterController2D playerController;
     public Collider2D col;
     public float damage;
@@ -81,17 +82,19 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void TakeDamage(float damage, float knockTime, float knockBackPower)
+    public void TakeDamage(float damage, float knockTime, float knockBackPower)
     {
         AudioManager.instance.Play("bump_sound", "Once");
         health -= damage;
 
         if (health <= 0)
         {
-            Die(false);
+            Die(true);
         }
         else
         {
+            StartCoroutine(AnimateHit());
+
             knockBackTimer = knockTime;
 
             Vector2 dir = rb.transform.position - playerRb.transform.position;
@@ -101,21 +104,37 @@ public class EnemyController : MonoBehaviour
 
     void Die(bool animation)
     {
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+        rb.gravityScale = 0;
+        col.enabled = false;
         if (animation)
         {
-            StartCoroutine("AnimateDeath");
+            StartCoroutine(AnimateDeath());
         }
-        Destroy(gameObject);
     }
 
     private IEnumerator AnimateDeath()
     {
-        for (int i = 0; i < 5; i++)
-        {
-            gameObject.SetActive(false);
-            yield return new WaitForSeconds(0.2f);
-            gameObject.SetActive(true);
-            yield return new WaitForSeconds(0.2f);
-        }
+        spriteRenderer.enabled = !spriteRenderer.enabled;
+        yield return new WaitForSeconds(0.5f);
+        spriteRenderer.enabled = !spriteRenderer.enabled;
+        yield return new WaitForSeconds(0.5f);
+        spriteRenderer.enabled = !spriteRenderer.enabled;
+        yield return new WaitForSeconds(0.5f);
+        spriteRenderer.enabled = !spriteRenderer.enabled;
+        yield return new WaitForSeconds(0.5f);
+        spriteRenderer.enabled = !spriteRenderer.enabled;
+        yield return new WaitForSeconds(0.5f);
+        spriteRenderer.enabled = !spriteRenderer.enabled;
+        yield return new WaitForSeconds(0.5f);
+        Destroy(gameObject);
+    }
+
+    private IEnumerator AnimateHit()
+    {
+        spriteRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.5f);
+        spriteRenderer.color = new Color(250, 0, 0, 255);
     }
 }

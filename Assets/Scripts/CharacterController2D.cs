@@ -13,11 +13,12 @@ public class CharacterController2D : MonoBehaviour
     public float dashTime = 2f;
     public float fallSpeed = 2f;
     public float jumpFallSpeed = 1.5f;
+    public Transform attackPosition;
     public float attackRange = 1f;
     public float attackDamage = 5f;
+    public float attackTime = 1f;
     public bool isFacingRight = true;
     public bool grounded = false;
-    public bool isAttacking = false;
     public bool isCrouching = false;
     public bool isDashing = false;
     public bool specialPressed = false;
@@ -34,7 +35,8 @@ public class CharacterController2D : MonoBehaviour
     public ParticleSystem dust;
 
     public float FreezeTimer = 0f;
-    public float dashTimer = 0;
+    public float dashTimer = 0f;
+    public float attackTimer = 0f;
     private Vector2 dashDir;
     private AfterImage AfterImageScript;
     [HideInInspector]
@@ -53,7 +55,6 @@ public class CharacterController2D : MonoBehaviour
     {
         anim.SetFloat("xvelocity", Mathf.Abs(rb.velocity.x));
         anim.SetFloat("yvelocity", rb.velocity.y);
-        anim.SetBool("isAttacking", isAttacking);
         anim.SetBool("isGrounded", grounded);
         anim.SetBool("isCrouching", isCrouching);
         anim.SetBool("isClimbing", isClimbing);
@@ -62,6 +63,7 @@ public class CharacterController2D : MonoBehaviour
 
         FreezeTimer -= Time.deltaTime;
         dashTimer -= Time.deltaTime;
+        attackTimer -= Time.deltaTime;
 
         //Dash movement update
         if (isDashing)
@@ -123,10 +125,10 @@ public class CharacterController2D : MonoBehaviour
             if (!isCrouching) 
             {
                 //Attack Check
-                if (Input.GetKeyDown(KeyCode.F) && !isAttacking && grounded)
+                if (Input.GetKeyDown(KeyCode.F) && grounded && attackTimer <= 0f)
                 {
-                    isAttacking = true;
-                    Invoke("Attack", 0.2f);
+                    attackTimer = attackTime;
+                    Attack();               
                 }
                 //
 
@@ -208,14 +210,15 @@ public class CharacterController2D : MonoBehaviour
     private void Attack()
     {
         anim.SetTrigger("Attack");
-        RaycastHit2D hitbox = Physics2D.Raycast(transform.position, transform.right, attackRange);
+        var results = Physics2D.OverlapCircleAll(attackPosition.position, attackRange);
         rb.velocity = Vector2.zero;
-        Debug.DrawRay(transform.position, transform.right * attackRange);
 
-        if (hitbox.collider.tag == "Enemy")
+        foreach (Collider2D c in results)
         {
-            Debug.Log("Enemy");
-            //hitbox.collider.gameObject.GetComponent<EnemyController>().TakeDamage(attackDamage, knockBackTime, knockBackPower);
+            if (c.tag == "Enemy")
+            {
+                c.GetComponent<EnemyController>().TakeDamage(attackDamage, 1, 0.5f);
+            }
         }
     }
 
@@ -294,18 +297,11 @@ public class CharacterController2D : MonoBehaviour
         {
             isHit = true;
 
-            Vector2 dir = transform.position - enemyPos;
+            Vector2 dir = rb.transform.position - enemyPos;
 
             Debug.DrawRay(transform.position, new Vector2(dir.normalized.x, 1f) * knockBackPower, Color.white, 5f);
-
-            if (dir.x > 0)
-            {
-                rb.velocity = new Vector2(1, 1) * knockBackPower;
-            }
-            else
-            {
-                rb.velocity = new Vector2(-1, 1) * knockBackPower;
-            }
+            
+            rb.velocity = new Vector2(dir.normalized.x, 1) * knockBackPower;
         }
     }
 
@@ -328,5 +324,10 @@ public class CharacterController2D : MonoBehaviour
     private void CreateDust()
     {
         dust.Play();
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(attackPosition.position, attackRange);
     }
 }
