@@ -9,11 +9,13 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public float health;
-    public float coins;
+    public int health;
+    public int maxHealth;
+    public int coins;
     public int currentLevel = 0;
-    public float jumpMultiplier;
     public float speedMultiplier;
+    public float jumpMultiplier;
+    public float dashMultiplier;
     public bool GamePaused = false;
     public Animator anim;
     public Level[] Levels;
@@ -60,6 +62,13 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("level1", 1);
         }
 
+        maxHealth = PlayerPrefs.GetInt("maxHealth", 100);
+        health = maxHealth;
+        coins = PlayerPrefs.GetInt("coins", 0);
+        speedMultiplier = PlayerPrefs.GetFloat("speedMultiplier", 1);
+        jumpMultiplier = PlayerPrefs.GetFloat("jumpMultiplier", 1);
+        dashMultiplier = PlayerPrefs.GetFloat("dashMultiplier", 1);
+
         for (int i = 0; i < Levels.Count(); i++)
         {
             Levels[i].unlocked = PlayerPrefs.GetInt("level" + (i + 1), 0) == 1;
@@ -73,25 +82,42 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.audioMixer.SetFloat("volumeSFX", Mathf.Log10(PlayerPrefs.GetFloat("volumeSFX")) * 20);
     }
 
-    public void ChangeStat(string s, float i)
+    public void ChangeStat(string s, float i, bool save)
     {
         switch (s)
         {
             case "health":
-                health += i;
+                health += Mathf.FloorToInt(i);
+                break;
+
+            case "maxHealth":
+                maxHealth = Mathf.FloorToInt(i);
+                    PlayerPrefs.SetInt("maxHealth", maxHealth);
                 break;
 
             case "coins":
-                coins += i;
+                coins += Mathf.FloorToInt(i);
                 AudioManager.instance.Play("coin_sound", "Once");
+                if (save)
+                    PlayerPrefs.SetInt("coins", coins);
+                break;
+
+            case "speedMultiplier":
+                speedMultiplier += i;
+                if (save)
+                    PlayerPrefs.SetFloat("speedMultiplier", speedMultiplier);
                 break;
 
             case "jumpMultiplier":
                 jumpMultiplier += i;
+                if (save)
+                    PlayerPrefs.SetFloat("jumpMultiplier", jumpMultiplier);
                 break;
 
-            case "speedMultiplier":
-                jumpMultiplier += i;
+            case "dashMultiplier":
+                dashMultiplier += i;
+                if (save)
+                    PlayerPrefs.SetFloat("dashMultiplier", dashMultiplier);
                 break;
         }
     }
@@ -213,7 +239,8 @@ public class GameManager : MonoBehaviour
         maskBG.SetActive(true);
         StartCoroutine(ChangeColor(1f));
         maskBG.GetComponent<Image>().color = new Color(maskBG.GetComponent<Image>().color.r, maskBG.GetComponent<Image>().color.g, maskBG.GetComponent<Image>().color.b, 255);
-        circleMask.transform.position = GameObject.Find("Player").transform.position;
+        circleMask.transform.position = GameObject.Find("Player").transform.localPosition;
+        circleMask.transform.position = new Vector3(circleMask.transform.position.x, circleMask.transform.position.y + 0.5f, circleMask.transform.position.z);
         circleMask.GetComponent<Animator>().Play("Death");
     }
 

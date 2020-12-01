@@ -14,16 +14,21 @@ public class PressableButton : MonoBehaviour
     public Animator anim;
     public bool isPressed = false;
     public float currentWeight = 0f;
-    public GameObject effected;
+    public GameObject[] effectedItems;
     [HideInInspector]
     public int selected = 0;
-    public List<MethodInfo> methods = new List<MethodInfo>();
+    [HideInInspector]
+    public int selected2 = 0;
+    public List<MethodInfo> onButtonDown = new List<MethodInfo>();
+    public List<MethodInfo> onButtonUp = new List<MethodInfo>();
+
     public string className;
 
     void OnEnable()
     {
-        var mbs = effected.GetComponent<MonoBehaviour>().GetType().GetMethods();
-        methods.AddRange(mbs);
+        var mbs = effectedItems[0].GetComponent<MonoBehaviour>().GetType().GetMethods();
+        onButtonDown.AddRange(mbs);
+        onButtonUp.AddRange(mbs);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -61,11 +66,17 @@ public class PressableButton : MonoBehaviour
     {
         if (isPressed)
         {
-            methods[selected].Invoke(effected.GetComponent(Type.GetType(className)), null);
+            for (int i = 0; i < effectedItems.Length; i++)
+            {
+                onButtonDown[selected].Invoke(effectedItems[i].GetComponent(className), null);
+            }
         }
         else
         {
-            methods[selected].Invoke(effected.GetComponent(Type.GetType(className)), null);
+            for (int i = 0; i < effectedItems.Length; i++)
+            {
+                onButtonUp[selected2].Invoke(effectedItems[i].GetComponent(className), null);
+            }
         }
     }
 

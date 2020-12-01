@@ -54,7 +54,7 @@ public class AudioManager : MonoBehaviour
         {
             if (s.name == name)
             {
-                if (option == "Once" && !s.source.isPlaying)
+                if (option == "Once")
                 {
                     s.source.PlayOneShot(s.source.clip, s.source.volume);
                 }

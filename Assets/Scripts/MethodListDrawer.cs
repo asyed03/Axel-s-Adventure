@@ -17,15 +17,21 @@ public class MethodListDrawer : Editor
         base.OnInspectorGUI();
 
         PressableButton scr = (PressableButton)target;
-                
-        var methods = scr.effected.GetComponent(Type.GetType(scr.className)).GetType().GetMethods();
+
+        if (scr.effectedItems.Length == 0 || scr.effectedItems[0] == null)
+        {
+            return;
+        }
+        var methods = scr.effectedItems[0].GetComponent(Type.GetType(scr.className)).GetType().GetMethods();
         List<string> mNames = new List<string>();
         foreach (var m in methods)
         {
             mNames.Add(m.Name);
         }
-        GUIContent label = new GUIContent("Methods");
+        GUIContent label = new GUIContent("OnButtonDown");
         scr.selected = EditorGUILayout.Popup(label, scr.selected, mNames.ToArray());
 
+        GUIContent label2 = new GUIContent("OnButtonUp");
+        scr.selected2 = EditorGUILayout.Popup(label2, scr.selected2, mNames.ToArray());
     }
 }

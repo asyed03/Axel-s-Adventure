@@ -19,7 +19,7 @@ public class Coin : MonoBehaviour
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
-            GameManager.instance.ChangeStat("coins", 1);
+            GameManager.instance.ChangeStat("coins", 1, true);
             Destroy(gameObject);
         }
 

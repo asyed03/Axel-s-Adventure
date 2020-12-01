@@ -285,12 +285,13 @@ public class CharacterController2D : MonoBehaviour
     }
     public void TakeDamage(float damage, float knockBackPower, float knockBackTime, Vector3 enemyPos)
     {
-        GameManager.instance.ChangeStat("health", -damage);
+        GameManager.instance.ChangeStat("health", -damage, false);
         AudioManager.instance.Play("hit_sound", "Once");
         FreezeTimer = knockBackTime;
         CameraController.Shake(0.25f, 0.1f);
         if (GameManager.instance.health <= 0)
         {
+            GameManager.instance.health = 0;
             Die();
         }
         else
@@ -307,6 +308,7 @@ public class CharacterController2D : MonoBehaviour
 
     public void Die()
     {
+        Debug.Log("working");
         CameraController.transform.position = new Vector3 (transform.position.x, transform.position.y, CameraController.transform.position.z);
         rb.velocity = Vector2.zero;
         isDead = true;

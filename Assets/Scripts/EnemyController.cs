@@ -66,19 +66,9 @@ public class EnemyController : MonoBehaviour
     {
         if (LayerMask.LayerToName(collision.collider.gameObject.layer) == "Player")
         {
-            rb.velocity = Vector2.zero;
-            //Debug.Log("Player: " + collision.collider.bounds.min.y + " Enemy: " + (col.bounds.max.y));
-            if (collision.collider.bounds.min.y >= col.bounds.max.y-0.03)
-            {
-                playerRb.AddForce(Vector2.up * 10, ForceMode2D.Impulse);
-                TakeDamage(playerController.attackDamage, freezeTime, 1f);
-            }
-            else
-            {
-                playerRb.velocity = Vector2.zero;
-                playerController.TakeDamage(damage, playerKnockback, playerKnockbackTime, transform.position);
-                knockBackTimer = freezeTime;
-            }
+            playerRb.velocity = Vector2.zero;
+            playerController.TakeDamage(damage, playerKnockback, playerKnockbackTime, transform.position);
+            knockBackTimer = freezeTime;
         }
     }
 
@@ -89,6 +79,10 @@ public class EnemyController : MonoBehaviour
 
         if (health <= 0)
         {
+            knockBackTimer = knockTime;
+
+            Vector2 dir = rb.transform.position - playerRb.transform.position;
+            rb.velocity = new Vector2(dir.normalized.x, 1) * knockBackPower * 2;
             Die(true);
         }
         else

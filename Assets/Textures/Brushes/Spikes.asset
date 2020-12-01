@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Spikes
   m_EditorClassIdentifier: 
   m_Cells:
-  - m_Tile: {fileID: 0}
+  - m_Tile: {fileID: 11400000, guid: 0bb02db95452fc6468bf6ddbe89040d8, type: 2}
     m_Matrix:
       e00: 1
       e01: 0
@@ -35,6 +35,6 @@ MonoBehaviour:
   m_Size: {x: 1, y: 1, z: 1}
   m_Pivot: {x: 0, y: 0, z: 0}
   m_CanChangeZPosition: 0
-  m_Anchor: {x: 0.5, y: 0.5, z: 0.5}
+  m_Anchor: {x: 0.5, y: 0, z: 0.5}
   m_Prefab: {fileID: 1643128682492530951, guid: 5b6cde8406cbb4c43b1fdb256f670f5d,
     type: 3}

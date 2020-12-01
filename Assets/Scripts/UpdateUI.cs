@@ -26,7 +26,7 @@ public class UpdateUI : MonoBehaviour
     {
         CoinText.text = "Coins: " + GameManager.instance.coins;
         LevelText.text = "Level: " + GameManager.instance.Levels[GameManager.instance.currentLevel - 1].number;
-        healthScale.localScale = new Vector3((GameManager.instance.health / 100) * healthTotal.localScale.x, healthScale.localScale.y, healthScale.localScale.z);
+        healthScale.localScale = new Vector3(((float)GameManager.instance.health / (float)GameManager.instance.maxHealth) * healthTotal.localScale.x, healthScale.localScale.y, healthScale.localScale.z);
         
         if (Input.GetKeyDown(KeyCode.P))
         {
