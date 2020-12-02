@@ -21,6 +21,7 @@ public class EnemyController : MonoBehaviour
     public float speed;
     public float playerKnockback;
     public float playerKnockbackTime;
+    public float playerFreezeTime;
     [Range(0, 5)]
     public float moveRange;
     public float knockBackTime;
@@ -58,10 +59,10 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        rb.velocity = Vector2.zero;
         if (LayerMask.LayerToName(collision.collider.gameObject.layer) == "Player")
         {
-            playerRb.velocity = Vector2.zero;
-            playerController.TakeDamage(damage, playerKnockback, playerKnockbackTime, transform.position);
+            playerController.TakeDamage(damage, playerKnockback, playerKnockbackTime, playerFreezeTime, transform.position);
             knockBackTimer = freezeTime;
         }
     }

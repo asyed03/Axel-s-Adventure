@@ -20,7 +20,7 @@ public class Spikes : MonoBehaviour
     {
         if (on && LayerMask.LayerToName(collision.collider.gameObject.layer) == "Player")
         {
-            collision.collider.gameObject.GetComponent<CharacterController2D>().TakeDamage(damage, 0, 2, transform.position);
+            collision.collider.gameObject.GetComponent<CharacterController2D>().TakeDamage(damage, 0, 2, 2, transform.position);
         }
     }
 

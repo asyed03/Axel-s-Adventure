@@ -35,6 +35,7 @@ public class CharacterController2D : MonoBehaviour
     public ParticleSystem dust;
 
     public float FreezeTimer = 0f;
+    public float knockTimer = -20f;
     public float dashTimer = 0f;
     public float attackTimer = 0f;
     private Vector2 dashDir;
@@ -47,7 +48,7 @@ public class CharacterController2D : MonoBehaviour
     void Start()
     {
         AfterImageScript = GetComponent<AfterImage>();
-        GameManager.instance.health = 100;
+        GameManager.instance.health = GameManager.instance.maxHealth;
     }
 
     // Update is called once per frame
@@ -62,13 +63,17 @@ public class CharacterController2D : MonoBehaviour
         anim.SetBool("isHit", isHit);
 
         FreezeTimer -= Time.deltaTime;
+        if (knockTimer > 0)
+        {
+            knockTimer -= Time.deltaTime;
+        }
         dashTimer -= Time.deltaTime;
         attackTimer -= Time.deltaTime;
 
         //Dash movement update
         if (isDashing)
         {
-            if (isHit || isClimbing || dashTimer <= 0)
+            if (isClimbing || dashTimer <= 0)
             {
                 dashTimer = 0;
                 isDashing = false;
@@ -103,6 +108,13 @@ public class CharacterController2D : MonoBehaviour
             }
         }
 
+        if (knockTimer <= 0 && knockTimer != -20)
+        {
+            knockTimer = -20;
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+
+
         if (FreezeTimer <= 0 && GameManager.instance.GamePaused == false && !isDead && !isClimbing)
         {
             isHit = false;
@@ -119,7 +131,7 @@ public class CharacterController2D : MonoBehaviour
             //
 
             //Crouch Check     
-            isCrouching = Input.GetKey(KeyCode.S);
+            isCrouching = Input.GetKey(KeyCode.S) && grounded;
             //
 
             if (!isCrouching) 
@@ -215,7 +227,7 @@ public class CharacterController2D : MonoBehaviour
 
         foreach (Collider2D c in results)
         {
-            if (c.tag == "Enemy")
+            if (c.CompareTag("Enemy"))
             {
                 c.GetComponent<EnemyController>().TakeDamage(attackDamage, 1, 0.5f);
             }
@@ -283,11 +295,20 @@ public class CharacterController2D : MonoBehaviour
             rb.gravityScale = 1;
         }
     }
-    public void TakeDamage(float damage, float knockBackPower, float knockBackTime, Vector3 enemyPos)
+    public void TakeDamage(float damage, float knockBackPower, float knockBackTime, float freezeTime, Vector3 enemyPos)
     {
+        //Stopping dash
+        dashTimer = 0;
+        isDashing = false;
+        AfterImageScript.makeImage = false;
+        rb.velocity = Vector2.zero;
+        //
+        isClimbing = false;
+
         GameManager.instance.ChangeStat("health", -damage, false);
         AudioManager.instance.Play("hit_sound", "Once");
-        FreezeTimer = knockBackTime;
+        FreezeTimer = freezeTime;
+        knockTimer = knockBackTime;
         CameraController.Shake(0.25f, 0.1f);
         if (GameManager.instance.health <= 0)
         {
@@ -301,8 +322,15 @@ public class CharacterController2D : MonoBehaviour
             Vector2 dir = rb.transform.position - enemyPos;
 
             Debug.DrawRay(transform.position, new Vector2(dir.normalized.x, 1f) * knockBackPower, Color.white, 5f);
-            
+
+            dir = new Vector2(dir.x, 0);
+            if (dir.x == 0)
+            {
+                dir = new Vector2(-1, 0);
+            }
+
             rb.velocity = new Vector2(dir.normalized.x, 1) * knockBackPower;
+            Debug.Log("knocked back");
         }
     }
 
