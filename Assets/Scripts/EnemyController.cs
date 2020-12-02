@@ -30,13 +30,7 @@ public class EnemyController : MonoBehaviour
 
     private Vector2 startPos;
     private bool facingRight = true;
-    private bool isHit = false;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    //private bool isHit = false;
 
     // Update is called once per frame
     void Update()

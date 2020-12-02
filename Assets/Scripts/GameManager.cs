@@ -156,7 +156,7 @@ public class GameManager : MonoBehaviour
     {
         //health = 100;
         lastSceneLoaded = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(Levels[levelnum - 1].scene.name);
+        SceneManager.LoadScene(Levels[levelnum - 1].sceneName);
         currentLevel = levelnum;
         if (!Levels[currentLevel - 1].unlocked || PlayerPrefs.GetInt("level" + currentLevel, 0) != 1)
         {
@@ -182,7 +182,7 @@ public class GameManager : MonoBehaviour
     public void LoadNextLevel()
     {
         //health = 100;
-        SceneManager.LoadScene(Levels[currentLevel].scene.name);
+        SceneManager.LoadScene(Levels[currentLevel].sceneName);
         LevelLoaded = true;
         AudioManager.instance.Play("level_music", "Continuous");
         currentLevel += 1;
@@ -206,7 +206,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (Level l in Levels)
         {
-            if (l.scene.name == lastSceneLoaded)
+            if (l.sceneName == lastSceneLoaded)
             {
                 LevelLoaded = true;
                 break;
