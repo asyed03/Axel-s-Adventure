@@ -34,17 +34,10 @@ public class PhysicsObject : MonoBehaviour
 
     void FixedUpdate()
     {
-        /*
         velocity += gravityMod * Physics2D.gravity * Time.deltaTime;
         grounded = false;
         Vector2 deltapos = velocity * Time.deltaTime;
         Move(deltapos, true);
-        */
-        gravity += gravityMod * Physics2D.gravity * Time.deltaTime;
-        velocity += gravityMod * Physics2D.gravity * Time.deltaTime;
-        Vector2 deltapos = velocity * Time.deltaTime;
-
-        Movement(deltapos);
     }
 
     // Update is called once per frame
@@ -94,47 +87,6 @@ public class PhysicsObject : MonoBehaviour
 
             }
         }
-        rb.position += move.normalized * distance;
-    }
-
-    protected void Movement(Vector2 move)
-    {
-        float distance = move.magnitude;
-
-        int raycast = rb.Cast(move, cfilter, hitpoints, shellradius + distance);
-
-        listhitpoints.Clear();
-        for (int i = 0; i < raycast; i++)
-        {
-            listhitpoints.Add(hitpoints[i]);
-        }
-
-        for (int i = 0; i < listhitpoints.Count; i++)
-        {
-            groundNormal = listhitpoints[i].normal;
-
-            if (groundNormal.y > minGroundNormalY)
-            {
-                grounded = true;
-            }
-
-            Vector2 moveAlongGround = new Vector2(-groundNormal.y, groundNormal.x);
-            float projection = Vector2.Dot(groundNormal, velocity);
-            float projection2 = Vector2.Dot(gravity, moveAlongGround);
-
-            if (groundNormal.x != 0)
-            {
-                Debug.DrawRay(rb.transform.position, moveAlongGround);
-                Debug.Log("True2");
-                velocity += projection2 * moveAlongGround;
-            }
-
-            float mindist = listhitpoints[i].distance - shellradius;
-
-            distance = mindist < distance ? mindist : distance;
-        }
-
-        Debug.DrawRay(rb.transform.position, velocity, Color.green);
         rb.position += move.normalized * distance;
     }
 }

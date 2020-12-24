@@ -10,16 +10,16 @@ GameObject:
   m_Component:
   - component: {fileID: 3430855380280057855}
   - component: {fileID: 4057282883747676110}
-  - component: {fileID: 2249429916316444805}
+  - component: {fileID: 5928731230532254507}
   - component: {fileID: 2994116125589969435}
   - component: {fileID: 1199511368773013848}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3430855380280057855
 Transform:
   m_ObjectHideFlags: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 5904656394399346045}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 301d36c6e1715104eaa51652a44339f3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 225773703
-  m_SortingLayer: 4
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ca2809609adf6ca4789b4d2ccc00965f, type: 3}
   m_Color: {r: 0.9811321, g: 0, b: 0, a: 1}
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &2249429916316444805
+--- !u!61 &5928731230532254507
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,14 +102,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 4, y: 4}
     newSize: {x: 0.16, y: 0.16}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 1}
+  m_Size: {x: 4, y: 4}
   m_EdgeRadius: 0
 --- !u!50 &2994116125589969435
 Rigidbody2D:
@@ -146,14 +146,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 50
   rb: {fileID: 2994116125589969435}
-  playerRb: {fileID: 0}
   spriteRenderer: {fileID: 4057282883747676110}
   playerController: {fileID: 0}
-  col: {fileID: 2249429916316444805}
-  damage: 20
+  col: {fileID: 5928731230532254507}
+  damage: 10
   speed: 1.5
-  playerKnockback: 2
-  playerKnockbackTime: 1
+  playerKnockback: 7
+  playerKnockbackTime: 0.3
+  playerFreezeTime: 1
   moveRange: 1
   knockBackTime: 1
   freezeTime: 0.5

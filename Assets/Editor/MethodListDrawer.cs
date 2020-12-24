@@ -22,7 +22,7 @@ public class MethodListDrawer : Editor
         {
             return;
         }
-        var methods = scr.effectedItems[0].GetComponent(Type.GetType(scr.className)).GetType().GetMethods();
+        var methods = scr.effectedItems[0].GetComponent(scr.className).GetType().GetMethods();
         List<string> mNames = new List<string>();
         foreach (var m in methods)
         {

@@ -10,7 +10,6 @@ public class PressableButton : MonoBehaviour
 {
     private float triggerMass = 1f;
     public LayerMask interactables;
-    public BoxCollider2D col;
     public Animator anim;
     public bool isPressed = false;
     public float currentWeight = 0f;

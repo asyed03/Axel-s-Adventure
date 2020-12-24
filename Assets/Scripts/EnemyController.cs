@@ -10,21 +10,23 @@ using UnityEngine.UIElements;
 
 public class EnemyController : MonoBehaviour
 {
+    public enum EnemyType {square, slime};
+    public EnemyType enemyType;
     public float health = 5f;
     public Rigidbody2D rb;
-    public Rigidbody2D playerRb;
     public SpriteRenderer spriteRenderer;
-    public CharacterController2D playerController;
     public Collider2D col;
     public float damage;
+    public bool isDead = false;
 
     public float speed;
     public float playerKnockback;
     public float playerKnockbackTime;
+    public float playerFreezeTime;
     [Range(0, 5)]
     public float moveRange;
-    public float knockBackTime;
     public float freezeTime;
+    public bool frozen = false;
 
     private float knockBackTimer = 0f;
 
@@ -36,18 +38,21 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         //Debug.DrawRay(transform.position, new Vector2(-playerRb.velocity.normalized.x, 1) * playerKnockback);
-        Debug.DrawRay(transform.position, new Vector2(transform.right.normalized.x, 1) * 5);
         knockBackTimer -= Time.deltaTime;
 
-        if (col.IsTouchingLayers(LayerMask.GetMask("Ground")) && knockBackTimer <= 0)
+        if (col.IsTouchingLayers(LayerMask.GetMask("Ground")) && knockBackTimer <= 0 && !isDead && !frozen)
         {
             if (startPos == null)
             {
                 startPos = transform.position;
             }
 
-            rb.velocity = transform.right * speed;
+            if (enemyType == EnemyType.slime)
+            {
+                GetComponent<Animator>().SetFloat("xvel", Mathf.Abs(rb.velocity.x));
+            }
 
+            rb.velocity = transform.right * speed;
             if (transform.position.x > startPos.x + moveRange && facingRight || transform.position.x < startPos.x - moveRange && !facingRight)
             {
                 facingRight = !facingRight;
@@ -58,48 +63,57 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (LayerMask.LayerToName(collision.collider.gameObject.layer) == "Player")
+        if (LayerMask.LayerToName(collision.collider.gameObject.layer) == "Player" && knockBackTimer <= 0)
         {
-            playerRb.velocity = Vector2.zero;
-            playerController.TakeDamage(damage, playerKnockback, playerKnockbackTime, transform.position);
+            rb.velocity = Vector2.zero;
+            collision.gameObject.GetComponent<CharacterController2D>().TakeDamage(damage, playerKnockback, playerKnockbackTime, playerFreezeTime, transform.position);
             knockBackTimer = freezeTime;
         }
     }
 
-    public void TakeDamage(float damage, float knockTime, float knockBackPower)
-    {
+    public void TakeDamage(float damage, float knockTime, float knockBackPower, Vector3 playerPos)
+    {   
         AudioManager.instance.Play("bump_sound", "Once");
         health -= damage;
 
         if (health <= 0)
         {
-            knockBackTimer = knockTime;
-
-            Vector2 dir = rb.transform.position - playerRb.transform.position;
-            rb.velocity = new Vector2(dir.normalized.x, 1) * knockBackPower * 2;
-            Die(true);
+            isDead = true;
+            if (enemyType == EnemyType.slime)
+            {
+                GetComponent<Animator>().SetTrigger("isHit");
+                GetComponent<Animator>().SetTrigger("isDead");
+                rb.velocity = Vector2.zero;
+                rb.isKinematic = true;
+                col.enabled = false;
+            }
+            else
+            {
+                Die();
+            }
         }
         else
         {
-            StartCoroutine(AnimateHit());
+            if (enemyType == EnemyType.slime)
+            {
+                GetComponent<Animator>().SetTrigger("isHit");
+            }
+            else
+            {
+                StartCoroutine(AnimateHit());
+            }
 
             knockBackTimer = knockTime;
 
-            Vector2 dir = rb.transform.position - playerRb.transform.position;
+            Vector2 dir = rb.transform.position - playerPos;
             rb.velocity = new Vector2(dir.normalized.x, 1) * knockBackPower;
         }
+        Debug.DrawRay(transform.position, rb.velocity);
     }
 
-    void Die(bool animation)
+    void Die()
     {
-        rb.velocity = Vector2.zero;
-        rb.isKinematic = true;
-        rb.gravityScale = 0;
-        col.enabled = false;
-        if (animation)
-        {
-            StartCoroutine(AnimateDeath());
-        }
+        StartCoroutine(AnimateDeath());
     }
 
     private IEnumerator AnimateDeath()
@@ -121,8 +135,9 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator AnimateHit()
     {
+        var temp = spriteRenderer.color;
         spriteRenderer.color = Color.white;
         yield return new WaitForSeconds(0.5f);
-        spriteRenderer.color = new Color(250, 0, 0, 255);
+        spriteRenderer.color = temp;
     }
 }

@@ -9,6 +9,10 @@ TagManager:
   - Health
   - UI
   - Enemy
+  - PauseButton
+  - Effects
+  - UIWrapper
+  - Button
   layers:
   - Default
   - TransparentFX
@@ -24,8 +28,8 @@ TagManager:
   - Button
   - Box
   - Rope
-  - 
-  - 
+  - Enemy
+  - LevelBounds
   - 
   - 
   - 

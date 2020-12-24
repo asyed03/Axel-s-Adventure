@@ -8,6 +8,7 @@ public class Flag : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            Debug.Log("flagggg");
             GameManager.instance.LoadNextLevel();
         }
     }

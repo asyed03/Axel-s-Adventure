@@ -5,60 +5,66 @@ using UnityEngine;
 public class CustomPhysics : MonoBehaviour
 {
     private Vector2 velocity;
-    private Vector2 Force;
     private Rigidbody2D rb;
-    public float mass = 1;
-    public float gravityMod = 1f;
-    public Vector2 gravity = new Vector2(0, -9.8f);
-    public Vector2 forceGravity;
+    public float colliderRadius;
+    public float friction;
     public ContactFilter2D cfilter;
     public RaycastHit2D[] results = new RaycastHit2D[16];
-    public List<RaycastHit2D> hits = new List<RaycastHit2D>(16);
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        cfilter.SetLayerMask(Physics2D.GetLayerCollisionMask(gameObject.layer));
-        forceGravity = (gravity * gravityMod * mass);
-        Force = forceGravity;
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        velocity += (Force/mass) * Time.deltaTime;
-        Vector2 deltaPos = velocity * Time.deltaTime;
-        rb.position += deltaPos;
-        Force = CalculateForce(deltaPos);
-    }
-
-
-    public Vector2 CalculateForce(Vector2 deltaPos)
-    {
-        Vector2 newForce = Force;
-        int count = rb.Cast(deltaPos, cfilter, results, deltaPos.magnitude);
-        hits.Clear();
-        for (int i = 0; i < count; i++)
+       if (rb == null)
         {
-            hits.Add(results[i]);
+            rb = GetComponent<Rigidbody2D>();
         }
+    }
 
-        for (int i = 0; i < hits.Count; i++)
+    private void FixedUpdate()
+    {
+        velocity += Physics2D.gravity * Time.deltaTime;
+        Vector2 deltapos = velocity * Time.deltaTime;
+        Move(deltapos);
+    }
+
+    void Move(Vector2 deltapos)
+    {
+        RaycastHit2D[] hits = new RaycastHit2D[16];
+        Debug.DrawRay(transform.position, deltapos, Color.green);
+        if (deltapos.magnitude > 0.0001f)
         {
-            Vector2 normal = hits[i].normal;
-            Debug.Log(normal);
-            Vector2 forceNormal = normal.normalized * forceGravity;
-            Vector2 forceGravityAngle = forceGravity;
-            if (Mathf.Abs(normal.x) > 0.01)
+            int cast = rb.Cast(deltapos, cfilter, hits, deltapos.magnitude + colliderRadius);
+
+            for (int i = 0; i < cast; i++)
             {
-                Vector2 moveAlongGround = new Vector2(-normal.y, normal.x);
-                forceGravityAngle = (forceGravity * Mathf.Sin(Vector2.Angle(forceGravity, -forceNormal)));
+                Vector2 normal = results[i].normal;
+                Debug.Log(normal);
+                Debug.DrawRay(transform.position, normal, Color.green);
+                Debug.DrawRay(transform.position, deltapos, Color.red);
+                if (deltapos.x == 0 && normal.x == 0)
+                {
+                    deltapos = Vector2.zero;
+                }
+                else if (deltapos.x != 0 && normal.x == 0)
+                {
+                    deltapos.x -= friction;
+                    deltapos.x = Mathf.Clamp(deltapos.x, 0, Mathf.Max(deltapos.x));
+                    deltapos.y = 0;
+                }
+                else
+                {
+                    Debug.Log("happening");
+                    Vector2 alongGround = new Vector2(-normal.y, normal.x);
+                    float dot = Vector2.Dot(normal, alongGround);
+                    deltapos = dot * alongGround;
+                }
+                float maxDist = hits[i].distance - colliderRadius;
+                if (deltapos.magnitude >= maxDist)
+                {
+                    deltapos = deltapos.normalized * maxDist;
+                }
             }
-            newForce = forceNormal + forceGravityAngle;
-        }
-
-        Debug.Log(newForce);
-        return newForce;
+        } 
+        transform.position += new Vector3(deltapos.x, deltapos.y, 0);
     }
-
 }
+

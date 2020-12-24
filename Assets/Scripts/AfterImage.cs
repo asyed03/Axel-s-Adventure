@@ -6,12 +6,15 @@ using UnityEngine.UI;
 public class AfterImage : MonoBehaviour
 {
     public GameObject afterImage;
+    public Animator anim;
     public float imageDelay;
     public float destroyDelay;
     public bool makeImage = false;
 
     private SpriteRenderer spriteRenderer;
+    private SpriteRenderer spRenderer;
     private float imageDelayTimer = 0f;
+    private float alphaset;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +33,10 @@ public class AfterImage : MonoBehaviour
             else
             {
                 GameObject afterImageObject = Instantiate(afterImage, transform.position, transform.rotation);
-                afterImageObject.GetComponent<SpriteRenderer>().sprite = spriteRenderer.sprite;
+                anim = afterImageObject.GetComponent<Animator>();
+                spRenderer = afterImageObject.GetComponent<SpriteRenderer>();
+                spRenderer.sprite = spriteRenderer.sprite;
+                anim.Play("AfterImage");
                 imageDelayTimer = imageDelay;
                 Destroy(afterImageObject, destroyDelay);
             }

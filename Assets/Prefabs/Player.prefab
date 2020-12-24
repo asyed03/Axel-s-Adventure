@@ -4815,7 +4815,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1290227039
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: -5
   m_RenderMode: 0
   m_SortMode: 0
@@ -4859,7 +4859,7 @@ GameObject:
   - component: {fileID: 6388138399882968805}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4918,7 +4918,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1290227039
-  m_SortingLayer: 6
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 8064955433946147422, guid: 03bd3460927a26c41b997437669e685e,
     type: 3}
@@ -5019,9 +5019,12 @@ MonoBehaviour:
   fallSpeed: 2
   jumpFallSpeed: 5
   attackPosition: {fileID: 1031901734}
-  attackRange: 0.32
   attackDamage: 5
+  attackRange: 0.32
+  attackFreezeTime: 0.5
+  attackKnockPower: 3
   attackTime: 0.5
+  frozen: 0
   isFacingRight: 1
   grounded: 0
   isCrouching: 0
@@ -5041,8 +5044,9 @@ MonoBehaviour:
   anim: {fileID: 534908251}
   dust: {fileID: 1880007982}
   FreezeTimer: 0
-  dashTimer: 0
-  attackTimer: 0
+  KnockTimer: 0
+  DashTimer: 0
+  AttackTimer: 0
   ropeCollider: {fileID: 0}
 --- !u!114 &6388138399882968805
 MonoBehaviour:
@@ -5058,6 +5062,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   afterImage: {fileID: 6308217653117617987, guid: fd6e1b04c0ae11e448dbb91d292afb35,
     type: 3}
+  anim: {fileID: 0}
   imageDelay: 0.1
   destroyDelay: 1
   makeImage: 0

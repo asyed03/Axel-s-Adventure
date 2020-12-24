@@ -14,9 +14,13 @@ public class CharacterController2D : MonoBehaviour
     public float fallSpeed = 2f;
     public float jumpFallSpeed = 1.5f;
     public Transform attackPosition;
-    public float attackRange = 1f;
     public float attackDamage = 5f;
+    public float attackRange = 1f;
+    public float attackFreezeTime = 0.5f;
+    public float attackKnockPower = 3f;
     public float attackTime = 1f;
+    public bool cutscene = false;
+    public bool frozen = false;
     public bool isFacingRight = true;
     public bool grounded = false;
     public bool isCrouching = false;
@@ -26,17 +30,20 @@ public class CharacterController2D : MonoBehaviour
     public bool isDead = false;
     public bool isClimbing = false;
     public bool canClimb = true;
+    public bool isTouchingWall = false;
     public CameraController2D CameraController;
     public Rigidbody2D rb;
     public BoxCollider2D boxcollider;
     public SpriteRenderer spriteRenderer;
     public LayerMask groundLayers;
+    public LayerMask wallLayers;
     public Animator anim;
     public ParticleSystem dust;
 
     public float FreezeTimer = 0f;
-    public float dashTimer = 0f;
-    public float attackTimer = 0f;
+    public float KnockTimer = 0f;
+    public float DashTimer = 0f;
+    public float AttackTimer = 0f;
     private Vector2 dashDir;
     private AfterImage AfterImageScript;
     [HideInInspector]
@@ -60,17 +67,36 @@ public class CharacterController2D : MonoBehaviour
         anim.SetBool("isClimbing", isClimbing);
         anim.SetBool("isClimbingMovement", false);
         anim.SetBool("isHit", isHit);
+        anim.SetBool("isTouchingWall", isTouchingWall);
 
         FreezeTimer -= Time.deltaTime;
-        dashTimer -= Time.deltaTime;
-        attackTimer -= Time.deltaTime;
+        if (FreezeTimer > 0)
+        {
+            Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Enemy"), true);
+        }
+        else
+        {
+            Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Enemy"), false);
+            spriteRenderer.color = Color.white;
+        }
+        if (KnockTimer > 0)
+        {
+            KnockTimer -= Time.deltaTime;
+        }
+        else
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+
+        DashTimer -= Time.deltaTime;
+        AttackTimer -= Time.deltaTime;
 
         //Dash movement update
         if (isDashing)
         {
-            if (isHit || isClimbing || dashTimer <= 0)
+            if (isClimbing || DashTimer <= 0)
             {
-                dashTimer = 0;
+                DashTimer = 0;
                 isDashing = false;
                 AfterImageScript.makeImage = false;
                 rb.velocity = Vector2.zero;
@@ -103,7 +129,7 @@ public class CharacterController2D : MonoBehaviour
             }
         }
 
-        if (FreezeTimer <= 0 && GameManager.instance.GamePaused == false && !isDead && !isClimbing)
+        if (FreezeTimer <= 0 && GameManager.instance.GamePaused == false && !isDead && !isClimbing && !frozen && !cutscene)
         {
             isHit = false;
 
@@ -125,9 +151,11 @@ public class CharacterController2D : MonoBehaviour
             if (!isCrouching) 
             {
                 //Attack Check
-                if (Input.GetKeyDown(KeyCode.F) && grounded && attackTimer <= 0f)
+                if (Input.GetKeyDown(KeyCode.F) && grounded && AttackTimer <= 0f)
                 {
-                    attackTimer = attackTime;
+                    rb.velocity = Vector2.zero;
+                    FreezeTimer = attackFreezeTime;
+                    AttackTimer = attackTime;
                     Attack();               
                 }
                 //
@@ -156,7 +184,7 @@ public class CharacterController2D : MonoBehaviour
 
     private void Move()
     {
-        if (rb.velocity.y < 0)
+        if (rb.velocity.y < 0 || FreezeTimer >= 0)
         {
             rb.velocity += Physics2D.gravity * fallSpeed * Time.deltaTime;
         }
@@ -184,44 +212,56 @@ public class CharacterController2D : MonoBehaviour
     private void GroundCheck() 
     {
         RaycastHit2D hit = Physics2D.Raycast(boxcollider.bounds.center, Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
-        RaycastHit2D hitL = Physics2D.Raycast(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x/ 2.01f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
-        RaycastHit2D hitR = Physics2D.Raycast(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.01f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
+        RaycastHit2D hitL = Physics2D.Raycast(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x/ 2.1f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
+        RaycastHit2D hitR = Physics2D.Raycast(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.1f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
+        RaycastHit2D hitRW = Physics2D.Raycast(boxcollider.bounds.center, Vector2.right, boxcollider.bounds.extents.x + 0.01f, wallLayers);
+        RaycastHit2D hitLW = Physics2D.Raycast(boxcollider.bounds.center, Vector2.left, boxcollider.bounds.extents.x + 0.01f, wallLayers);
 
         Debug.DrawRay(boxcollider.bounds.center, Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
-        Debug.DrawRay(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x / 2.01f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
-        Debug.DrawRay(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.01f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
+        Debug.DrawRay(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x / 2.1f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
+        Debug.DrawRay(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.1f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
+        Debug.DrawRay(boxcollider.bounds.center, Vector2.right * (boxcollider.bounds.extents.x + 0.01f), Color.red);
+        Debug.DrawRay(boxcollider.bounds.center, Vector2.left * (boxcollider.bounds.extents.x + 0.01f), Color.red);
 
         if (hit.collider != null || hitL.collider != null || hitR.collider != null)
         {
+            isTouchingWall = (hitRW.collider != null || hitLW.collider != null) && ((isFacingRight && Input.GetKey(KeyCode.D)) || (!isFacingRight && Input.GetKey(KeyCode.A)));
             if (grounded == false)
             {
                 CreateDust();
             }
             grounded = true;
+            DashTimer = 0;
             canClimb = true;
             specialPressed = false;
         }
         else
         {
-            grounded = false; 
+            grounded = false;
+            if (isTouchingWall)
+                isTouchingWall = false;
         }
     }
 
     private void Attack()
     {
         anim.SetTrigger("Attack");
-        var results = Physics2D.OverlapCircleAll(attackPosition.position, attackRange);
-        rb.velocity = Vector2.zero;
-
-        foreach (Collider2D c in results)
-        {
-            if (c.tag == "Enemy")
-            {
-                c.GetComponent<EnemyController>().TakeDamage(attackDamage, 1, 0.5f);
-            }
-        }
+        StartCoroutine(Waitforanim());
     }
 
+    private IEnumerator Waitforanim()
+    {
+        yield return new WaitForSeconds(0.1f);
+        var results = Physics2D.OverlapCircleAll(attackPosition.position, attackRange);
+        foreach (Collider2D c in results)
+        {
+            if (c.CompareTag("Enemy"))
+            {
+                c.GetComponent<EnemyController>().TakeDamage(attackDamage, 1, attackKnockPower, transform.position);
+            }
+        }
+        rb.velocity = Vector2.zero; 
+    }
     public void Dash(bool cameraShake, float duration, float frequency)
     {
         CreateDust();
@@ -229,7 +269,7 @@ public class CharacterController2D : MonoBehaviour
         float VerticalAxis = Input.GetAxis("Vertical");
         //vertical movement
 
-        dashTimer = dashTime;
+        DashTimer = dashTime;
         if ((Mathf.Abs(HorizontalAxis) > 0 || Mathf.Abs(VerticalAxis) > 0) && !isClimbing)
         {
             dashDir = ((Vector2.up * VerticalAxis) + (Vector2.right * HorizontalAxis)).normalized * dashSpeed;
@@ -242,7 +282,7 @@ public class CharacterController2D : MonoBehaviour
         rb.velocity = Vector2.zero;
         isDashing = true;
         specialPressed = true;
-        dashTimer = dashTime;
+        DashTimer = dashTime;
         isClimbing = false;
 
         if (cameraShake)
@@ -283,12 +323,21 @@ public class CharacterController2D : MonoBehaviour
             rb.gravityScale = 1;
         }
     }
-    public void TakeDamage(float damage, float knockBackPower, float knockBackTime, Vector3 enemyPos)
+    public void TakeDamage(float damage, float knockBackPower, float knockBackTime, float freezeTime, Vector3 enemyPos)
     {
-        GameManager.instance.ChangeStat("health", -damage, false);
+        rb.velocity = Vector2.zero;
+        GameManager.instance.ChangeStat("health", -damage);
         AudioManager.instance.Play("hit_sound", "Once");
-        FreezeTimer = knockBackTime;
-        CameraController.Shake(0.25f, 0.1f);
+        if (isDashing)
+        {
+            DashTimer = 0;
+            isDashing = false;
+            AfterImageScript.makeImage = false;
+            rb.velocity = Vector2.zero;
+        }
+        FreezeTimer = freezeTime;
+        KnockTimer = knockBackTime;
+        
         if (GameManager.instance.health <= 0)
         {
             GameManager.instance.health = 0;
@@ -296,31 +345,42 @@ public class CharacterController2D : MonoBehaviour
         }
         else
         {
+            spriteRenderer.color = Color.red;
+            CameraController.Shake(0.25f, 0.1f);
             isHit = true;
-
+         
             Vector2 dir = rb.transform.position - enemyPos;
 
             Debug.DrawRay(transform.position, new Vector2(dir.normalized.x, 1f) * knockBackPower, Color.white, 5f);
-            
-            rb.velocity = new Vector2(dir.normalized.x, 1) * knockBackPower;
+
+            dir = new Vector2(dir.x, 0);
+            if (!grounded)
+            {
+                rb.velocity = new Vector2(dir.normalized.x, 0.3f) * knockBackPower;
+            }
+            else
+            {
+                rb.velocity = new Vector2(dir.normalized.x, 1) * knockBackPower;
+            }
         }
     }
 
     public void Die()
     {
         Debug.Log("working");
+        rb.isKinematic = true;
+        boxcollider.enabled = false;
         CameraController.transform.position = new Vector3 (transform.position.x, transform.position.y, CameraController.transform.position.z);
         rb.velocity = Vector2.zero;
         isDead = true;
         anim.SetTrigger("isDead");
-        rb.isKinematic = true;
-        boxcollider.enabled = false;
-        this.enabled = false;
+        var script = GetComponent<CharacterController2D>();
+        script.enabled = false;
     }
     
     public void DieAnim()
     {
-        GameManager.instance.DeathAnimate();
+        GameManager.instance.Animate("death");
     }
 
     private void CreateDust()

@@ -17,27 +17,25 @@ public class GameManager : MonoBehaviour
     public float jumpMultiplier;
     public float dashMultiplier;
     public bool GamePaused = false;
+    public bool pauseable = true;
     public Animator anim;
     public Level[] Levels;
     public string lastSceneLoaded = "MainMenu";
-    public GameObject maskBG;
-    public GameObject circleMask;
-    public Canvas EffectsCanvas;
     public bool LevelLoaded = false;
 
     void Awake()
     {
         MakeSingleton();
 
-        InititializeGameDefault();
-
-        LoadMainMenu();
+        InititializeGameDefault();    
     }
 
     void Start()
     {
-        maskBG.SetActive(false);
-        circleMask.SetActive(false);
+        if (SceneManager.GetActiveScene().name == "_preload")
+        {
+            LoadMainMenu();
+        }
         SetMixerVolume();
     }
 
@@ -82,7 +80,7 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.audioMixer.SetFloat("volumeSFX", Mathf.Log10(PlayerPrefs.GetFloat("volumeSFX")) * 20);
     }
 
-    public void ChangeStat(string s, float i, bool save)
+    public void ChangeStat(string s, float i, bool save = false)
     {
         switch (s)
         {
@@ -143,8 +141,8 @@ public class GameManager : MonoBehaviour
             TogglePauseGame();
         }
         SceneManager.LoadScene("MainMenu");
-        LevelLoaded = false;
         AudioManager.instance.Play("menu_music", "Continuous");
+        LevelLoaded = false;
     }
 
     public void LoadSceneFromPauseMenu(string scene)
@@ -232,18 +230,23 @@ public class GameManager : MonoBehaviour
         lastSceneLoaded = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
-
+    /*
     public void DeathAnimate()
     {
         circleMask.SetActive(true);
         maskBG.SetActive(true);
-        StartCoroutine(ChangeColor(1f));
         maskBG.GetComponent<Image>().color = new Color(maskBG.GetComponent<Image>().color.r, maskBG.GetComponent<Image>().color.g, maskBG.GetComponent<Image>().color.b, 255);
         circleMask.transform.position = GameObject.Find("Player").transform.localPosition;
         circleMask.transform.position = new Vector3(circleMask.transform.position.x, circleMask.transform.position.y + 0.5f, circleMask.transform.position.z);
         circleMask.GetComponent<Animator>().Play("Death");
     }
+    */
 
+
+    public void Animate(string s)   
+    {
+        GetComponentInChildren<Effects>().Animate(s);
+    }
     public void ResetGame()
     {
         PlayerPrefs.DeleteAll();
@@ -254,19 +257,11 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        circleMask.SetActive(false);
-        maskBG.SetActive(false);
         LoadScene("GameOver");
     }
 
     public void QuitGame()
     {
         Application.Quit();
-    }
-
-    private IEnumerator ChangeColor(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        
     }
 }

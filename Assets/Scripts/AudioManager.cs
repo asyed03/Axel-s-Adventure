@@ -7,7 +7,6 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
     public AudioMixer audioMixer;
     public Sound[] sounds;
-    
 
     // Update is called once per frame
     void Awake()

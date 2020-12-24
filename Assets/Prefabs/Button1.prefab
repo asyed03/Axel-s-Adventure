@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 1998877953118556160}
   - component: {fileID: 7714210126600725562}
   - component: {fileID: 9082616107938897195}
-  - component: {fileID: 6949015200449041538}
   - component: {fileID: 607283648}
+  - component: {fileID: 850802657168199437}
   - component: {fileID: 4637939842380878227}
   m_Layer: 11
   m_Name: Button1
-  m_TagString: Untagged
+  m_TagString: Button
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -73,11 +73,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -286460537
+  m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2529969904836788678, guid: caab2052727bf74489b82560d5977baa,
-    type: 3}
+  m_Sprite: {fileID: -3095396064853083, guid: caab2052727bf74489b82560d5977baa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -109,32 +108,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!61 &6949015200449041538
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4510281282319291092}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.0043866634, y: 0.15060878}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.625, y: 0.28125}
-    newSize: {x: 0.625, y: 0.28125}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.62275004, y: 0.276464}
-  m_EdgeRadius: 0
 --- !u!95 &607283648
 Animator:
   serializedVersion: 3
@@ -154,6 +127,32 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!61 &850802657168199437
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4510281282319291092}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0003888011, y: 0.1417914}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 0.625, y: 0.28125}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.6233374, y: 0.2835828}
+  m_EdgeRadius: 0
 --- !u!114 &4637939842380878227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,13 +167,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactables:
     serializedVersion: 2
-    m_Bits: 768
-  col: {fileID: 6949015200449041538}
+    m_Bits: 4864
   anim: {fileID: 607283648}
   isPressed: 0
   currentWeight: 0
-  effected: {fileID: 0}
+  effectedItems:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   selected: 0
+  selected2: 0
   className: Spikes
 --- !u!1 &8344075992185082811
 GameObject:
@@ -231,5 +233,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.27882195, y: 0.02165842}
+  m_Size: {x: 0.27882195, y: 0.03}
   m_EdgeRadius: 0

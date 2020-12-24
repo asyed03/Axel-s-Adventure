@@ -10,7 +10,7 @@ public class CameraController2D : MonoBehaviour
     public float followSpeed = 1f;
     public float shakeRange = 0.5f;
     public float shakeTimer;
-    private Camera cam;
+    public Camera cam;
     private Vector3[] focusCorners = new Vector3[4];
     private Vector3[] worldCorners = new Vector3[4];
     private Vector3 desiredPos;
@@ -18,11 +18,11 @@ public class CameraController2D : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cam = GetComponent<Camera>();
-        GameManager.instance.EffectsCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-        GameManager.instance.EffectsCanvas.worldCamera = cam;
-        GameManager.instance.EffectsCanvas.sortingLayerName = "UI";
-        GameManager.instance.EffectsCanvas.sortingOrder = 1;
+        if (cam == null)
+        {
+            cam = GetComponent<Camera>();
+        }
+        //transform.position = new Vector3(character.transform.position.x, character.transform.position.y, transform.position.z);
     }
 
     // Update is called once per frame
@@ -48,7 +48,10 @@ public class CameraController2D : MonoBehaviour
             cam.WorldToScreenPoint(character.transform.position).y > cam.WorldToScreenPoint(focusCorners[2]).y ||
             cam.WorldToScreenPoint(character.transform.position).y < cam.WorldToScreenPoint(focusCorners[0]).y)
         {
-            desiredPos = new Vector3(character.transform.position.x, character.transform.position.y, transform.position.z);          
+            float offsetX = transform.position.x - focusBounds.position.x;
+            float offsetY = transform.position.y - focusBounds.position.y;
+
+            desiredPos = new Vector3(character.transform.position.x + offsetX, character.transform.position.y + offsetY, transform.position.z);          
         }
         transform.position = Vector3.Lerp(transform.position, desiredPos, followSpeed);
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, worldCorners[0].x + horzExtent, worldCorners[2].x - horzExtent),
