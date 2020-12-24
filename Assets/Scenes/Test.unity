@@ -124,40 +124,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &156737768 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1400856800588234208, guid: 4cb1da2cf1f38c94b9e34ab1a21c41f0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1218909014}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &156737769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 156737768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48a92e6b66769084685e064ddfec5d42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  colliderRadius: 0.01
-  friction: 0.1
-  cfilter:
-    useTriggers: 0
-    useLayerMask: 1
-    useDepth: 0
-    useOutsideDepth: 0
-    useNormalAngle: 0
-    useOutsideNormalAngle: 0
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 512
-    minDepth: 0
-    maxDepth: 0
-    minNormalAngle: 0
-    maxNormalAngle: 0
 --- !u!1 &1020532971
 GameObject:
   m_ObjectHideFlags: 0
@@ -287,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 1400856800588234210, guid: 4cb1da2cf1f38c94b9e34ab1a21c41f0,
         type: 3}
       propertyPath: m_BodyType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1400856800588234210, guid: 4cb1da2cf1f38c94b9e34ab1a21c41f0,
         type: 3}

@@ -1,10 +1,9 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -154,7 +153,8 @@ public class GameManager : MonoBehaviour
     {
         //health = 100;
         lastSceneLoaded = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(Levels[levelnum - 1].sceneName);
+        StartCoroutine(LoadSceneAsynchronous(Levels[levelnum - 1].sceneName));
+        //SceneManager.LoadSceneAsync(Levels[levelnum - 1].sceneName);
         currentLevel = levelnum;
         if (!Levels[currentLevel - 1].unlocked || PlayerPrefs.GetInt("level" + currentLevel, 0) != 1)
         {
@@ -165,6 +165,36 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.Play("level_music", "Continuous");
     }
 
+    public IEnumerator LoadSceneAsynchronous(string level)
+    {
+        string SceneName = "";
+        for (int i =0; i < EditorBuildSettings.scenes.Length; i++)
+        {
+            if (EditorBuildSettings.scenes[i].path == "Assets/Scenes/" + level + ".unity")
+            {
+                SceneName = level;
+                break;
+            }
+        }
+        if (SceneName == "")
+        {
+            Debug.LogError("Scene Not Found!");
+            yield break;
+        }  
+        SceneManager.LoadScene("Loading Screen");
+        Debug.Log(level);
+        yield return new WaitForSeconds(1);
+        Image loadingBar = GameObject.FindGameObjectWithTag("LoadBar").GetComponent<Image>();
+        Debug.Log("YEES");
+        AsyncOperation loading = SceneManager.LoadSceneAsync(level);
+        while (!loading.isDone)
+        {
+            if (loadingBar != null)
+                loadingBar.fillAmount = loading.progress;
+            yield return null;
+        }
+        yield return new WaitForSeconds(0.5f);
+    }
     public void ReloadLevel()
     {
         //health = 100;
@@ -180,7 +210,7 @@ public class GameManager : MonoBehaviour
     public void LoadNextLevel()
     {
         //health = 100;
-        SceneManager.LoadScene(Levels[currentLevel].sceneName);
+        StartCoroutine(LoadSceneAsynchronous(Levels[currentLevel].sceneName));
         LevelLoaded = true;
         AudioManager.instance.Play("level_music", "Continuous");
         currentLevel += 1;
