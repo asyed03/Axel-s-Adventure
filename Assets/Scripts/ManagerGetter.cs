@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ManagerGetter : MonoBehaviour
 {
-    //GAMEMANGER FUNCTIONS
+    #region  GAMEMANGER FUNCTIONS
 
     public void TogglePauseGame()
     {
@@ -61,7 +61,19 @@ public class ManagerGetter : MonoBehaviour
         GameManager.instance.ResetGame();
     }
 
-    //AUDIOMANAGER FUNCTIONS
+    public void SaveGame()
+    {
+        GameManager.instance.SaveData();
+    }
+
+    public void LoadGame()
+    {
+        GameManager.instance.LoadData();
+    }
+
+    #endregion
+
+    #region AUDIOMANAGER FUNCTIONS
 
     public void Play(string name, string option)
     {
@@ -72,4 +84,7 @@ public class ManagerGetter : MonoBehaviour
     {
         GameManager.instance.QuitGame();
     }
+
+    #endregion
 }
+

@@ -15,6 +15,7 @@ public class CameraController2D : MonoBehaviour
     private Vector3[] worldCorners = new Vector3[4];
     private Vector3 desiredPos;
     public bool follow = false;
+    private bool lerping = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,8 +33,10 @@ public class CameraController2D : MonoBehaviour
         worldBounds.GetWorldCorners(worldCorners);
         float vertExtent = cam.orthographicSize;
         float horzExtent = vertExtent * cam.aspect;
-        desiredPos = transform.position;
-
+        if (!lerping)
+        {
+            desiredPos = transform.position;
+        }
         if (shakeTimer <=0)
         {
             CancelInvoke("SetRandomPos");
@@ -43,15 +46,19 @@ public class CameraController2D : MonoBehaviour
         {
             shakeTimer -= Time.deltaTime;
         }
-        if (follow && cam.WorldToScreenPoint(character.transform.position).x > cam.WorldToScreenPoint(focusCorners[2]).x ||
+        if (follow && (cam.WorldToScreenPoint(character.transform.position).x > cam.WorldToScreenPoint(focusCorners[2]).x ||
             cam.WorldToScreenPoint(character.transform.position).x < cam.WorldToScreenPoint(focusCorners[0]).x ||
             cam.WorldToScreenPoint(character.transform.position).y > cam.WorldToScreenPoint(focusCorners[2]).y ||
-            cam.WorldToScreenPoint(character.transform.position).y < cam.WorldToScreenPoint(focusCorners[0]).y)
+            cam.WorldToScreenPoint(character.transform.position).y < cam.WorldToScreenPoint(focusCorners[0]).y))
         {
             float offsetX = transform.position.x - focusBounds.position.x;
             float offsetY = transform.position.y - focusBounds.position.y;
-
+            lerping = true;
             desiredPos = new Vector3(character.transform.position.x + offsetX, character.transform.position.y + offsetY, transform.position.z);          
+        }
+        else if (transform.position == desiredPos)
+        {
+            lerping = false;
         }
         transform.position = Vector3.Lerp(transform.position, desiredPos, followSpeed);
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, worldCorners[0].x + horzExtent, worldCorners[2].x - horzExtent),

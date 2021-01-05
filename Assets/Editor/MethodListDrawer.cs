@@ -1,19 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Runtime.InteropServices.ComTypes;
-using UnityEngine.UI;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Linq;
-using JetBrains.Annotations;
-using System;
+
 
 [CustomEditor(typeof(PressableButton))]
 public class MethodListDrawer : Editor
 {
     public override void OnInspectorGUI()
-    {   
+    {
         base.OnInspectorGUI();
 
         PressableButton scr = (PressableButton)target;

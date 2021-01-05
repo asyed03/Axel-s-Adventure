@@ -194,7 +194,7 @@ public class CharacterController2D : MonoBehaviour
         }
 
         //Flip
-        if ((rb.velocity.x < 0 && isFacingRight) || (rb.velocity.x > 0 && !isFacingRight))
+        if ((rb.velocity.x < -0.01f && isFacingRight) || (rb.velocity.x > 0.01f && !isFacingRight))
         {
             Flip();
         }
@@ -212,14 +212,14 @@ public class CharacterController2D : MonoBehaviour
     private void GroundCheck() 
     {
         RaycastHit2D hit = Physics2D.Raycast(boxcollider.bounds.center, Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
-        RaycastHit2D hitL = Physics2D.Raycast(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x/ 2.1f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
-        RaycastHit2D hitR = Physics2D.Raycast(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.1f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
+        RaycastHit2D hitL = Physics2D.Raycast(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x/ 2.5f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
+        RaycastHit2D hitR = Physics2D.Raycast(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.5f), Vector2.down, boxcollider.bounds.extents.y + 0.05f, groundLayers);
         RaycastHit2D hitRW = Physics2D.Raycast(boxcollider.bounds.center, Vector2.right, boxcollider.bounds.extents.x + 0.01f, wallLayers);
         RaycastHit2D hitLW = Physics2D.Raycast(boxcollider.bounds.center, Vector2.left, boxcollider.bounds.extents.x + 0.01f, wallLayers);
 
         Debug.DrawRay(boxcollider.bounds.center, Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
-        Debug.DrawRay(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x / 2.1f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
-        Debug.DrawRay(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.1f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
+        Debug.DrawRay(boxcollider.bounds.center - (Vector3.right * boxcollider.size.x / 2.5f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
+        Debug.DrawRay(boxcollider.bounds.center + (Vector3.right * boxcollider.size.x / 2.5f), Vector2.down * (boxcollider.bounds.extents.y + 0.05f), Color.green);
         Debug.DrawRay(boxcollider.bounds.center, Vector2.right * (boxcollider.bounds.extents.x + 0.01f), Color.red);
         Debug.DrawRay(boxcollider.bounds.center, Vector2.left * (boxcollider.bounds.extents.x + 0.01f), Color.red);
 
@@ -337,7 +337,8 @@ public class CharacterController2D : MonoBehaviour
         }
         FreezeTimer = freezeTime;
         KnockTimer = knockBackTime;
-        
+        CameraController.Shake(0.25f, 0.1f);
+
         if (GameManager.instance.health <= 0)
         {
             GameManager.instance.health = 0;
@@ -346,7 +347,6 @@ public class CharacterController2D : MonoBehaviour
         else
         {
             spriteRenderer.color = Color.red;
-            CameraController.Shake(0.25f, 0.1f);
             isHit = true;
          
             Vector2 dir = rb.transform.position - enemyPos;
@@ -370,7 +370,6 @@ public class CharacterController2D : MonoBehaviour
         Debug.Log("working");
         rb.isKinematic = true;
         boxcollider.enabled = false;
-        CameraController.transform.position = new Vector3 (transform.position.x, transform.position.y, CameraController.transform.position.z);
         rb.velocity = Vector2.zero;
         isDead = true;
         anim.SetTrigger("isDead");

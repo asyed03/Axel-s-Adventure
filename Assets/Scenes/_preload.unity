@@ -131,6 +131,121 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: effects
+      value: 
+      objectReference: {fileID: 1687317948}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.levels.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[0].number
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[1].number
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[2].number
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[3].number
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[4].number
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[5].number
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[6].number
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[7].number
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[8].number
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[9].number
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[0].unlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[1].unlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[3].unlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[5].unlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.Array.data[7].unlocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.levels.Array.data[0].sceneName
+      value: Level1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.levels.Array.data[1].sceneName
+      value: Level1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.levels.Array.data[2].sceneName
+      value: Level1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.levels.Array.data[3].sceneName
+      value: Level1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: Levels.levels.Array.data[4].sceneName
+      value: Level1
+      objectReference: {fileID: 0}
     - target: {fileID: 994647063645836049, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
         type: 3}
       propertyPath: m_RootOrder
@@ -191,7 +306,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5867183963600065922, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -7446532601393689140, guid: 7d32ba9990b09bc4593f0ddc41de4e48, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7d32ba9990b09bc4593f0ddc41de4e48, type: 3}
 --- !u!1 &1212471115
 GameObject:
@@ -259,6 +380,92 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1337319213 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5867183963600065922, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+    type: 3}
+  m_PrefabInstance: {fileID: 639657596}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1337319214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337319213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f77c34c426301d4880a1df49d4d4277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  maxHealth: 100
+  coins: 0
+  currentLevel: 1
+  speedMultiplier: 1
+  jumpMultiplier: 1
+  dashMultiplier: 1
+  attackMultiplier: 0
+  masterLevel: 0
+  musicLevel: 0
+  sfxLevel: 0
+  GamePaused: 0
+  pauseable: 1
+  anim: {fileID: 0}
+  Levels:
+  - sceneName: asasd
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level2
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level3
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level4
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level5
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level6
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level7
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level8
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level9
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  - sceneName: Level10
+    number: 0
+    score: 0
+    time: 0
+    unlocked: 0
+  lastSceneLoaded: MainMenu
+  LevelLoaded: 1
+  effects: {fileID: 1687317948}
 --- !u!1 &1598278400
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,6 +581,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1687317948 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1963457122, guid: 7d32ba9990b09bc4593f0ddc41de4e48,
+    type: 3}
+  m_PrefabInstance: {fileID: 639657596}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bd2674ee7340d846bdb1e626b52d68a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6081140076164189724
 PrefabInstance:
   m_ObjectHideFlags: 0

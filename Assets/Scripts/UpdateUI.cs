@@ -29,7 +29,7 @@ public class UpdateUI : MonoBehaviour
     void Update()
     {
         CoinText.text = "Coins: " + GameManager.instance.coins;
-        LevelText.text = "Level: " + GameManager.instance.Levels[GameManager.instance.currentLevel - 1].number;
+        LevelText.text = "Level: " + GameManager.instance.currentLevel;
         HealthText.text = "HP: " + GameManager.instance.health + "/" + GameManager.instance.maxHealth;
         healthScale.localScale = new Vector3(((float)GameManager.instance.health / (float)GameManager.instance.maxHealth) * healthTotal.localScale.x, healthScale.localScale.y, healthScale.localScale.z);
         

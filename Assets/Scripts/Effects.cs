@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,11 +32,11 @@ public class Effects : MonoBehaviour
             case "death":
                 circleMask.SetActive(true);
                 maskBG.SetActive(true);
-                circleMask.transform.position = GameObject.Find("Player").transform.localPosition;
+                circleMask.GetComponent<RectTransform>().anchoredPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, GameObject.Find("Player").transform.position);
+                Debug.Log(circleMask.GetComponent<RectTransform>().position);
                 circleMask.transform.position = new Vector3(circleMask.transform.position.x, circleMask.transform.position.y + 0.5f, circleMask.transform.position.z);
                 circleMask.GetComponent<Animator>().SetTrigger("dead"); 
                 StartCoroutine(Wait(2.1f));
-
                 break;
 
             case "cutsceneIn":
@@ -51,14 +52,17 @@ public class Effects : MonoBehaviour
                 StartCoroutine(Wait2(0.51f));
                 break;
 
-            case "fadeout":
-                fadeoutMask.SetActive(true);
-                fadeoutMask.GetComponent<Animator>().SetTrigger("out");
-                break;
-
             case "fadein":
                 fadeoutMask.SetActive(true);
+                GameManager.instance.pauseable = false;
                 fadeoutMask.GetComponent<Animator>().SetTrigger("in");
+                StartCoroutine(Wait3(1f));
+                break;
+
+            case "fadeout":
+                fadeoutMask.SetActive(true);     
+                fadeoutMask.GetComponent<Animator>().SetTrigger("out");
+                StartCoroutine(Wait3(1f));
                 break;
         }
 
@@ -78,6 +82,11 @@ public class Effects : MonoBehaviour
             LevelUI.SetActive(true);
         }
 
-
+        IEnumerator Wait3(float t)
+        {
+            yield return new WaitForSeconds(t);
+            Debug.Log("done fade");
+            fadeoutMask.SetActive(false);
+        }
     }
 }

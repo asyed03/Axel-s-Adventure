@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Linq;
 using System.Collections;
 using UnityEngine.UI;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,18 +17,30 @@ public class GameManager : MonoBehaviour
     public float speedMultiplier;
     public float jumpMultiplier;
     public float dashMultiplier;
+    public float attackMultiplier;
+    public float masterLevel = 1;
+    public float musicLevel = 1;
+    public float sfxLevel = 1;
     public bool GamePaused = false;
     public bool pauseable = true;
     public Animator anim;
     public Level[] Levels;
     public string lastSceneLoaded = "MainMenu";
     public bool LevelLoaded = false;
-
+    public Effects effects;
     void Awake()
     {
         MakeSingleton();
 
         InititializeGameDefault();    
+    }
+
+    private void OnEnable()
+    {
+        for (int i = 0; i < Levels.Length; i++)
+        {
+            Levels[i].number = i;
+        }
     }
 
     void Start()
@@ -53,7 +67,35 @@ public class GameManager : MonoBehaviour
 
     public void InititializeGameDefault()
     {
-
+        Debug.Log(SaveSystem.path);
+        if (!File.Exists(SaveSystem.path)) 
+        {
+            Debug.Log("NewGame");
+            health = 100;
+            maxHealth = 100;
+            coins = 0;
+            speedMultiplier = 1;
+            jumpMultiplier = 1;
+            dashMultiplier = 1;
+            attackMultiplier = 1;
+            masterLevel = 1;
+            musicLevel = 1;
+            sfxLevel = 1;
+            Levels[0].unlocked = true;
+            for (int i = 1; i < Levels.Length; i++)
+            {
+                Levels[i].score = 0;
+                Levels[i].time = 0;
+                Levels[i].unlocked = false;
+            }
+            SaveData();
+        }
+        else
+        {
+            Debug.Log("data loaded");
+            LoadData();
+        }
+        /*
         if (PlayerPrefs.GetInt("level1", 0) != 1)
         {
             PlayerPrefs.SetInt("level1", 1);
@@ -71,12 +113,13 @@ public class GameManager : MonoBehaviour
             Levels[i].unlocked = PlayerPrefs.GetInt("level" + (i + 1), 0) == 1;
             Levels[i].number = i + 1;
         }
+        */
     }
 
     public void SetMixerVolume ()
     {
-        AudioManager.instance.audioMixer.SetFloat("volumeMusic", Mathf.Log10(PlayerPrefs.GetFloat("volumeMusic")) * 20);
-        AudioManager.instance.audioMixer.SetFloat("volumeSFX", Mathf.Log10(PlayerPrefs.GetFloat("volumeSFX")) * 20);
+        AudioManager.instance.audioMixer.SetFloat("volumeMusic", musicLevel);
+        AudioManager.instance.audioMixer.SetFloat("volumeSFX", sfxLevel);
     }
 
     public void ChangeStat(string s, float i, bool save = false)
@@ -116,20 +159,29 @@ public class GameManager : MonoBehaviour
                 if (save)
                     PlayerPrefs.SetFloat("dashMultiplier", dashMultiplier);
                 break;
+
+            case "attackMultiplier":
+                dashMultiplier += i;
+                if (save)
+                    PlayerPrefs.SetFloat("attackMultiplier", dashMultiplier);
+                break;
         }
     }
 
     public void TogglePauseGame()
     {
-        if (!GamePaused)
+        if (pauseable)
         {
-            GamePaused = !GamePaused;
-            Time.timeScale = 0;
-        }
-        else
-        {
-            GamePaused = !GamePaused;
-            Time.timeScale = 1;
+            if (!GamePaused)
+            {
+                GamePaused = !GamePaused;
+                Time.timeScale = 0;
+            }
+            else
+            {
+                GamePaused = !GamePaused;
+                Time.timeScale = 1;
+            }
         }
     }
 
@@ -167,25 +219,28 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LoadSceneAsynchronous(string level)
     {
-        string SceneName = "";
-        for (int i =0; i < EditorBuildSettings.scenes.Length; i++)
+        GameManager.instance.SaveData();
+
+        //fade animation stuff
+        pauseable = false;
+        effects.fadeoutMask.SetActive(true);
+        effects.fadeoutMask.GetComponent<Animator>().SetTrigger("in");
+        yield return new WaitForSeconds(1f);
+        //
+        AsyncOperation load = SceneManager.LoadSceneAsync("Loading Screen");
+        SaveData();
+        LoadData();
+        while (!load.isDone)
         {
-            if (EditorBuildSettings.scenes[i].path == "Assets/Scenes/" + level + ".unity")
-            {
-                SceneName = level;
-                break;
-            }
+            yield return null;
         }
-        if (SceneName == "")
-        {
-            Debug.LogError("Scene Not Found!");
-            yield break;
-        }  
-        SceneManager.LoadScene("Loading Screen");
+        //fade animation stuff
+        effects.fadeoutMask.SetActive(false);
+        Debug.Log("loading");
         Debug.Log(level);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
+        //
         Image loadingBar = GameObject.FindGameObjectWithTag("LoadBar").GetComponent<Image>();
-        Debug.Log("YEES");
         AsyncOperation loading = SceneManager.LoadSceneAsync(level);
         while (!loading.isDone)
         {
@@ -193,7 +248,13 @@ public class GameManager : MonoBehaviour
                 loadingBar.fillAmount = loading.progress;
             yield return null;
         }
-        yield return new WaitForSeconds(0.5f);
+        //fade animation stuff
+        effects.fadeoutMask.SetActive(true);
+        effects.fadeoutMask.GetComponent<Animator>().SetTrigger("out");
+        yield return new WaitForSeconds(1f);
+        effects.fadeoutMask.SetActive(false);
+        pauseable = true;
+        //
     }
     public void ReloadLevel()
     {
@@ -279,7 +340,7 @@ public class GameManager : MonoBehaviour
     }
     public void ResetGame()
     {
-        PlayerPrefs.DeleteAll();
+        File.Delete(SaveSystem.path);
         InititializeGameDefault();
         SetMixerVolume();
         LoadMainMenu();
@@ -290,8 +351,29 @@ public class GameManager : MonoBehaviour
         LoadScene("GameOver");
     }
 
+    public void SaveData()
+    {
+        SaveSystem.SaveData(this);
+    }
+
+    public void LoadData()
+    {
+        DataFile data = SaveSystem.LoadData();
+
+        maxHealth = data.maxHealth; 
+        coins = data.coins;
+        Levels = data.levels;
+        dashMultiplier = data.dashMultiplier;
+        attackMultiplier = data.attackMultiplier;
+        speedMultiplier = data.speedMultiplier;
+
+        masterLevel = data.masterLevel;
+        musicLevel = data.musicLevel;
+        sfxLevel = data.sfxLevel;
+    }
     public void QuitGame()
     {
+        GameManager.instance.SaveData();
         Application.Quit();
     }
 }
