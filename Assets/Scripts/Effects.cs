@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Effects : MonoBehaviour
 {
@@ -11,7 +12,12 @@ public class Effects : MonoBehaviour
     public GameObject fadeoutMask;
     public GameObject LevelUI;
 
-    private void Start()
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneChange;
+    }
+
+    private void OnSceneChange(Scene scene, LoadSceneMode mode)
     {
         GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
         GetComponent<Canvas>().worldCamera = Camera.main;
@@ -30,10 +36,12 @@ public class Effects : MonoBehaviour
                 break;
 
             case "death":
+                GameManager.instance.pauseable = false;
                 circleMask.SetActive(true);
                 maskBG.SetActive(true);
-                circleMask.GetComponent<RectTransform>().anchoredPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, GameObject.Find("Player").transform.position);
-                Debug.Log(circleMask.GetComponent<RectTransform>().position);
+                Camera.main.GetComponent<CameraController2D>().follow = false;
+                Camera.main.GetComponent<CameraController2D>().followSpeed = 0;
+                circleMask.GetComponent<RectTransform>().position = GameObject.Find("Player").transform.position;
                 circleMask.transform.position = new Vector3(circleMask.transform.position.x, circleMask.transform.position.y + 0.5f, circleMask.transform.position.z);
                 circleMask.GetComponent<Animator>().SetTrigger("dead"); 
                 StartCoroutine(Wait(2.1f));
@@ -71,6 +79,7 @@ public class Effects : MonoBehaviour
             yield return new WaitForSeconds(t);
             circleMask.SetActive(false);
             maskBG.SetActive(false);
+            GameManager.instance.pauseable = true;
         }
 
         IEnumerator Wait2(float t)
@@ -88,5 +97,10 @@ public class Effects : MonoBehaviour
             Debug.Log("done fade");
             fadeoutMask.SetActive(false);
         }
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneChange;
     }
 }

@@ -8,7 +8,7 @@ public class CharacterController2D : MonoBehaviour
     public float jump = 10f;
     public float speed = 2f;
     public float climbSpeed = 0.5f;
-    public float maxSpeed = 5f;
+    public Vector2 maxSpeed = new Vector2(5, 6);
     public float dashSpeed = 5f;
     public float dashTime = 2f;
     public float fallSpeed = 2f;
@@ -184,6 +184,7 @@ public class CharacterController2D : MonoBehaviour
 
     private void Move()
     {
+        //better jump
         if (rb.velocity.y < 0 || FreezeTimer >= 0)
         {
             rb.velocity += Physics2D.gravity * fallSpeed * Time.deltaTime;
@@ -193,14 +194,24 @@ public class CharacterController2D : MonoBehaviour
             rb.velocity += Physics2D.gravity * jumpFallSpeed * Time.deltaTime;
         }
 
+        //clamps velocity to max speed
+        if (!grounded && rb.velocity.y < -maxSpeed.y)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -maxSpeed.y);
+            Debug.Log(rb.velocity);
+        }
+
+        if (!isDashing && Mathf.Abs(rb.velocity.x) > maxSpeed.x)
+        {
+            rb.velocity = new Vector2(Mathf.Sign(rb.velocity.x) * maxSpeed.x, rb.velocity.y);
+            Debug.Log(rb.velocity);
+        }
+
         //Flip
         if ((rb.velocity.x < -0.01f && isFacingRight) || (rb.velocity.x > 0.01f && !isFacingRight))
         {
             Flip();
         }
-
-        //speed limit
-        //Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed);
     }
 
     private void Flip()
@@ -373,8 +384,7 @@ public class CharacterController2D : MonoBehaviour
         rb.velocity = Vector2.zero;
         isDead = true;
         anim.SetTrigger("isDead");
-        var script = GetComponent<CharacterController2D>();
-        script.enabled = false;
+        this.enabled = false;
     }
     
     public void DieAnim()

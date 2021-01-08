@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CustomPropertyDrawer(typeof(Level))]
-public class LevelEditor : PropertyDrawer
+public class LevelDrawer : PropertyDrawer
 {
     public static GameManager gameManagerEditor { get { return instance; } }
     public static GameManager instance = null;
