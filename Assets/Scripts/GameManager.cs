@@ -264,6 +264,7 @@ public class GameManager : MonoBehaviour
         {
             TogglePauseGame();
         }
+        pauseable = true;
         LevelLoaded = true;
         AudioManager.instance.Play("level_music", "Continuous");
     }
@@ -277,6 +278,7 @@ public class GameManager : MonoBehaviour
         currentLevel += 1;
         Levels[currentLevel - 1].unlocked = true;
         PlayerPrefs.SetInt("level" + currentLevel, 1);
+        pauseable = true;
     }
 
     public void LoadScene(string scene)
