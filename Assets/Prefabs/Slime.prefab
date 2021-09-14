@@ -161,10 +161,11 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1144979137850757705}
   col: {fileID: 1144979137850757707}
   damage: 10
+  isDead: 0
   speed: 2
   playerKnockback: 7
   playerKnockbackTime: 0.2
   playerFreezeTime: 0.5
   moveRange: 1
-  knockBackTime: 0
   freezeTime: 0
+  frozen: 0

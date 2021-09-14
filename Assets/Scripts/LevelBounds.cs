@@ -14,8 +14,11 @@ public class LevelBounds : MonoBehaviour
         }
         else
         {
-            Debug.Log(gameObject.name + "destroyed!");
-            Destroy(collision.gameObject, 0.3f);
+            if (collision.gameObject.transform.position.y <= Levelbounds.bounds.min.y)
+            {
+                Debug.Log(collision.gameObject.name + " destroyed!");
+                Destroy(collision.gameObject, 0.3f);
+            }
         }
     }
 }

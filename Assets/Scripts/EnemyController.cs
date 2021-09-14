@@ -118,6 +118,7 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator AnimateDeath()
     {
+        Debug.Log("animating death");
         spriteRenderer.enabled = !spriteRenderer.enabled;
         yield return new WaitForSeconds(0.5f);
         spriteRenderer.enabled = !spriteRenderer.enabled;
@@ -139,5 +140,14 @@ public class EnemyController : MonoBehaviour
         spriteRenderer.color = Color.white;
         yield return new WaitForSeconds(0.5f);
         spriteRenderer.color = temp;
+    }
+
+    public void SmartMove(Vector2 position)
+    {
+        if ((transform.rotation.y / 180) % 2 == 0 && position.x < transform.position.x || (transform.rotation.y / 180) % 2 != 0 && position.x > transform.position.x)
+        {
+            transform.Rotate(0, 180, 0);
+        }
+        rb.MovePosition(position);
     }
 }

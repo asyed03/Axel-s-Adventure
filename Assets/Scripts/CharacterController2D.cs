@@ -20,6 +20,7 @@ public class CharacterController2D : MonoBehaviour
     public float attackKnockPower = 3f;
     public float attackTime = 1f;
     public bool cutscene = false;
+    public bool cutsceneMove = false;
     public bool frozen = false;
     public bool isFacingRight = true;
     public bool grounded = false;
@@ -60,6 +61,7 @@ public class CharacterController2D : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(rb.velocity);
         anim.SetFloat("xvelocity", Mathf.Abs(rb.velocity.x));
         anim.SetFloat("yvelocity", rb.velocity.y);
         anim.SetBool("isGrounded", grounded);
@@ -83,7 +85,7 @@ public class CharacterController2D : MonoBehaviour
         {
             KnockTimer -= Time.deltaTime;
         }
-        else
+        else if (!cutsceneMove)
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
         }
@@ -179,10 +181,10 @@ public class CharacterController2D : MonoBehaviour
     {
         GroundCheck();
         //better jump
-        Move();
+        ApplyGamePhysics();
     }
 
-    private void Move()
+    private void ApplyGamePhysics()
     {
         //better jump
         if (rb.velocity.y < 0 || FreezeTimer >= 0)
@@ -214,7 +216,7 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
-    private void Flip()
+    public void Flip()
     {
         CreateDust();
         transform.Rotate(0, 180, 0);
@@ -401,4 +403,37 @@ public class CharacterController2D : MonoBehaviour
     {
         Gizmos.DrawWireSphere(attackPosition.position, attackRange);
     }
+        
+    public void Move(float distance)
+    {
+        //determine direction
+        cutsceneMove = true;
+        Vector2 position = new Vector2(transform.position.x + distance, transform.position.y);
+        rb.velocity = new Vector2(Mathf.Sign(distance)*speed, 0f);
+        Debug.Log("started" + cutsceneMove);
+        //determine stopping time
+        Invoke("Stop", distance/speed);
+        /*
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 1f, groundLayers);
+        Debug.DrawRay(transform.position, transform.right * 1f, Color.green);
+        if (hit.collider != null)
+        {
+            Debug.Log("hit");
+            if (hit)
+            {
+                rb.velocity = Vector2.up * jump;
+            }
+        }
+        */
+    }
+
+    public void Stop()
+    {
+        rb.velocity = Vector2.zero;
+        cutsceneMove = false;
+        Debug.Log("stopped" + cutsceneMove);
+
+    }
 }
+
+

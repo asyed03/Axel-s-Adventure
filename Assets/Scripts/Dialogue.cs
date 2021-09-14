@@ -16,7 +16,6 @@ public class Dialogue
     [HideInInspector]
     public TextMeshProUGUI TextElement;
     public Animator animator;
-    public Dialogue nextDialogue;
 
     public void WriteNext(float speed, string anim, KeyCode key)
     {

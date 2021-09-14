@@ -45,32 +45,22 @@ public class DialogueManager: MonoBehaviour
         currentKey = key;
         if (d.index >= d.sentences.Length)
         {
-            if (!isAnimating)
-            {
-                EndDialogue(d);
-            } 
-            return;
-        }
-        else if (isAnimating)
-        {
+            EndDialogue(d);
             return;
         }
         if (d.index == 0)
         {
-            dialogueObject = GameObject.Find("Dialogue Box(Clone)");
+            dialogueObject = GameObject.FindGameObjectWithTag("Dialog");
             if (dialogueObject == null)
             {
                 dialogueObject = Instantiate(DialogueBox, GameObject.Find("LevelUI").transform);
             }    
             foreach (Transform child in dialogueObject.transform)
             {
-                if (child.gameObject.name == "Name")
-                {
-                    child.gameObject.GetComponent<TextMeshProUGUI>().text = d.name;
-                }
                 if (child.gameObject.name == "Character")
                 {
                     child.gameObject.GetComponent<Image>().sprite = d.displaySprite;
+                    child.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = d.name;
                 }
                 if (child.gameObject.name == "Text")
                 {
@@ -85,17 +75,16 @@ public class DialogueManager: MonoBehaviour
             default:
                 d.TextElement.text = d.sentences[d.index];
                 break;
-
+                
             case "TypeWriter":
-                StartCoroutine(Typewriter(d.sentences[d.index], typeSpeed, d.TextElement, key));
-                d.index += 1;
+                StartCoroutine(Typewriter(d, d.sentences[d.index], typeSpeed, d.TextElement, key));
                 break;
         }
-        
     }
 
-    IEnumerator Typewriter(string sentence, float speed, TextMeshProUGUI text, KeyCode key)
+    IEnumerator Typewriter(Dialogue d, string sentence, float speed, TextMeshProUGUI text, KeyCode key)
     {
+        Debug.Log("typing");
         isAnimating = true;
         text.text = "";
         float speedMultiplier;
@@ -109,42 +98,46 @@ public class DialogueManager: MonoBehaviour
             {
                 speedMultiplier = speed;
             }
-            yield return new WaitForSeconds(speedMultiplier);
+            yield return new WaitForSeconds(speedMultiplier * Time.deltaTime);
             text.text += ch;
         }
         isAnimating = false;
+
+        yield return new WaitUntil(() => Input.GetKeyDown(key));
+
+        d.index += 1;
+        WriteSentence(d, speed, "TypeWriter", key);
     }
+   
 
     public void EndDialogue(Dialogue d)
     {
-        if (d.nextDialogue != null)
-        {
-            d.nextDialogue.WriteNext(currentSpeed, currentAnim, currentKey);
-        }
-        else
-        {
-            d.animator.SetBool("slidein", false);
-            if (dialogueObject != null) 
-            {
-                StartCoroutine(DestroyAfterSlide(d));
-            } 
-        }   
-    }
-
-    IEnumerator DestroyAfterSlide(Dialogue dialogue)
-    {
-        canTrigger = false;
-        yield return new WaitForSeconds(0.5f);
-        dialogue.index = 0;
         if (cutscene)
         {
-            GameObject.FindGameObjectWithTag("Player").GetComponent<CharacterController2D>().frozen = false;
             if (onCutsceneEnd != null)
             {
+                Debug.Log("dialogue done event fired");
                 onCutsceneEnd();
-            }        
+            }
             cutscene = false;
+            d.index = 0;
         }
+    }
+
+    public void slideout()
+    {
+        if (dialogueObject != null)
+        {
+            dialogueObject.GetComponent<Animator>().SetBool("slidein", false);
+            StartCoroutine(DestroyAfterSlide(dialogueObject.GetComponent<DialogueTrigger>()));
+        }
+    }
+
+    public IEnumerator DestroyAfterSlide(DialogueTrigger dialogueTrigger)
+    {
+        canTrigger = false;
+        //dialogueTrigger.dialogue.index = 0; 
+        yield return new WaitForSeconds(0.5f);
         Destroy(dialogueObject);
         canTrigger = true;
     }

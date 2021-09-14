@@ -71,6 +71,11 @@ public class ManagerGetter : MonoBehaviour
         GameManager.instance.LoadData();
     }
 
+    public void QuitGame()
+    {
+        GameManager.instance.QuitGame();
+    }
+
     #endregion
 
     #region AUDIOMANAGER FUNCTIONS
@@ -80,9 +85,13 @@ public class ManagerGetter : MonoBehaviour
         AudioManager.instance.Play(name, option);
     }
 
-    public void QuitGame()
+    #endregion
+
+    #region DIALOGUEMANAGER FUNCTIONS
+
+    public void CloseDialogue()
     {
-        GameManager.instance.QuitGame();
+        DialogueManager.instance.slideout();
     }
 
     #endregion
